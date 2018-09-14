@@ -210,6 +210,7 @@ function traverse(dir) {
       }
     }
   }
+}
 
 module.exports = init
 module.exports.addPath = addPath
