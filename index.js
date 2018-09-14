@@ -183,6 +183,34 @@ function init (options) {
   }
 }
 
+function traverse(dir) {
+  const contents = fs.readdirSync(dir);
+
+  for (let content of contents) {
+    const isDir = fs.statSync(`${dir}/${content}`).isDirectory();
+
+    if (isDir && content !== 'node_modules') {
+      traverse(`${dir}/${content}`);
+    } else if (content === 'package.json') {
+      const { _moduleAliases, _moduleDirectories } = require(`${dir}/${content}`);
+
+      if (_moduleAliases) {
+        for (let alias in _moduleAliases) {
+          addAlias(alias, `${dir}/${_moduleAliases[alias]}`)
+        }
+      }
+
+      if (_moduleDirectories instanceof Array) {
+        for (let moduleName of _moduleDirectories) {
+          if (moduleName === 'node_modules') return
+
+          var modulePath = nodePath.join(dir, moduleName)
+          addPath(modulePath)
+        }
+      }
+    }
+  }
+
 module.exports = init
 module.exports.addPath = addPath
 module.exports.addAlias = addAlias
