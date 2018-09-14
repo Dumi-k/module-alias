@@ -8,6 +8,7 @@ var Module = module.constructor.length > 1
   : BuiltinModule
 
 var nodePath = require('path')
+var fs = require('fs')
 
 var modulePaths = []
 var moduleAliases = {}
