@@ -144,44 +144,8 @@ function init (options) {
   var base = nodePath.resolve(
     options.base || nodePath.join(__dirname, '../..')
   )
-  var packagePath = base.replace(/\/package\.json$/, '') + '/package.json'
 
-  try {
-    var npmPackage = require(packagePath)
-  } catch (e) {
-    // Do nothing
-  }
-
-  if (typeof npmPackage !== 'object') {
-    throw new Error('Unable to read ' + packagePath)
-  }
-
-  //
-  // Import aliases
-  //
-
-  var aliases = npmPackage._moduleAliases || {}
-
-  for (var alias in aliases) {
-    if (aliases[alias][0] !== '/') {
-      aliases[alias] = nodePath.join(base, aliases[alias])
-    }
-  }
-
-  addAliases(aliases)
-
-  //
-  // Register custom module directories (like node_modules)
-  //
-
-  if (npmPackage._moduleDirectories instanceof Array) {
-    npmPackage._moduleDirectories.forEach(function (dir) {
-      if (dir === 'node_modules') return
-
-      var modulePath = nodePath.join(base, dir)
-      addPath(modulePath)
-    })
-  }
+  traverse(base)
 }
 
 function traverse(dir) {
