@@ -148,6 +148,7 @@ function init (options) {
   traverse(base)
 }
 
+
 function traverse(dir) {
   const contents = fs.readdirSync(dir);
 
